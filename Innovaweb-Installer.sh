@@ -152,20 +152,22 @@ SetPreferredEditor() {
 	echo -e "PREFERRED_EDITOR=${1}" > config.conf
 }
 
+if [[ $1 == "" ]]; then
 Base
+fi
 
 while getopts "hde:" OPTION; do
 	case $OPTION in
+		h)
+			Help
+			exit;;
+		d)
+			Dev
+			;;
 		e)
 			SetPreferredEditor $OPTARG
 			echo $OPTARG
 			;;
-		d)
-			Dev
-			;;
-		h)
-			Help
-			exit;;
 		?)
 			Help
 			exit;;
