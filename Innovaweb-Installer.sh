@@ -140,6 +140,11 @@ Dev() {
 	sudo mkdir -p /usr/share/nginx/phpmyadmin
 	sudo unzip phpMyAdmin-latest-all-languages.zip -d /usr/share/nginx/phpmyadmin
 	sudo cp $(dirname $SCRIPT_PATH)/phpmyadmin.conf /etc/nginx/conf.d
+	echo "Ingresa la contraseña de PHPMyAdmin:"
+	read PHPMYADMIN_PASSWORD
+	sed -i "s/P@ssw0rd/$PHPMYADMIN_PASSWORD/" phpmyadmin.sql
+
+	mysql -u root -p < phpmyadmin.sql
 
 	echo "Se abrirá el archivo de configuración de Ngninx para PHPMyAdmin, presiona enter para continuar..."
 	read
