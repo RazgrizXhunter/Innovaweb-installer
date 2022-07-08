@@ -136,10 +136,12 @@ Dev() {
 	
 	echo "Instalando PHPMyAdmin..."
 	
-	wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.zip
+	wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.tar.gz
 	sudo mkdir -p /usr/share/nginx/phpmyadmin
-	sudo unzip phpMyAdmin-latest-all-languages.zip -d /usr/share/nginx/phpmyadmin
+	sudo tar xzf phpMyAdmin-latest-all-languages.tar.gz -C /usr/share/nginx/phpmyadmin --strip-components=1
 	sudo cp $(dirname $SCRIPT_PATH)/phpmyadmin.conf /etc/nginx/conf.d
+	sudo chown nginx:nginx /etc/nginx/nginx.conf
+
 	echo "Ingresa la contraseña de PHPMyAdmin:"
 	read PHPMYADMIN_PASSWORD
 	sed -i "s/P@ssw0rd/$PHPMYADMIN_PASSWORD/" phpmyadmin.sql
@@ -149,6 +151,8 @@ Dev() {
 	echo "Se abrirá el archivo de configuración de Ngninx para PHPMyAdmin, presiona enter para continuar..."
 	read
 	sudoedit /etc/nginx/conf.d/phpmyadmin.conf
+	
+	sudo nginx -t && sudo service nginx reload
 	
 	echo "PHPMyAdmin listo..."
 }
