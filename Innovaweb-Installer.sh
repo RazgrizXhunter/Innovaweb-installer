@@ -174,7 +174,7 @@ SetPreferredEditor() {
 }
 
 if [[ $1 == "" ]]; then
-Base
+	Base
 fi
 
 while getopts "hde:" OPTION; do
