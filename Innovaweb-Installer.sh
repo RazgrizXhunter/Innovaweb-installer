@@ -80,13 +80,19 @@ Base() {
 	sudo systemctl enable mariadb
 	sudo systemctl start mariadb
 
+	sudo systemctl start php71-php-fpm
 	sudo systemctl enable php71-php-fpm
+	FPMConfig php71
 	sudo systemctl restart php71-php-fpm
 
+	sudo systemctl start php73-php-fpm
 	sudo systemctl enable php73-php-fpm
+	FPMConfig php73
 	sudo systemctl restart php73-php-fpm
 
+	sudo systemctl start php74-php-fpm
 	sudo systemctl enable php74-php-fpm
+	FPMConfig php74
 	sudo systemctl restart php74-php-fpm
 
 	sudo mysql_secure_installation
@@ -130,6 +136,12 @@ Base() {
 	echo "./Scripts/keysync/keysync.sh -I"
 }
 
+FPMConfig() {
+	PHPInstall=$1
+
+	sed -i 's/^(listen\.acl_groups = apache)$/&,nginx/' /etc/opt/remi/$PHPInstall/php-fpm.d/www.conf
+}
+
 Dev() {
 	# PHPMyAdmin
 	echo "Instalando paquetes del entorno de desarrollo..."
@@ -151,7 +163,7 @@ Dev() {
 	echo "Se abrirá el archivo de configuración de Ngninx para PHPMyAdmin, presiona enter para continuar..."
 	read
 	sudoedit /etc/nginx/conf.d/phpmyadmin.conf
-	
+
 	sudo nginx -t && sudo service nginx reload
 	
 	echo "PHPMyAdmin listo..."
