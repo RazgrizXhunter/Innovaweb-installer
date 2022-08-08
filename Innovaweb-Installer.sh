@@ -72,7 +72,7 @@ Base() {
 	sudo dnf install -y php73 php73-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
 	sudo dnf install -y php74 php74-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
 
-	sudo dnf install -y git htop vim nano mariadb-server python39 nginx cronie wget certbot python3-certbot python3-certbot-nginx unzip net-tools lsof
+	sudo dnf install -y git htop vim nano mariadb-server python39 nginx cronie wget certbot python3-certbot python3-certbot-nginx unzip net-tools lsof curl
 
 	sudo systemctl enable nginx
 	sudo systemctl start nginx
@@ -99,8 +99,8 @@ Base() {
 
 	# Install NVM
 	echo "¿Desea instalar Node (Node version manager)? [s/N]"
-	read ANSWER
-	if [[ $ANSWER == 's' ]] ; then
+	read ANSWER_NVM
+	if [[ $ANSWER_NVM == 's' ]] ; then
 		cd
 		echo "Instalando NVM"
 
@@ -116,6 +116,23 @@ Base() {
 		echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> $RC_FILE
 
 		source ~/.bashrc
+	fi
+
+	echo "¿Desea instalar Docker? [s/N]"
+	read ANSWER_DOCKER
+	if [[ $ANSWER_DOCKER == 's' ]] ; then
+		sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+		sudo dnf install -y docker-ce
+
+		sudo systemctl start docker
+		sudo systemctl enable docker
+
+		sudo usermod -aG docker $USER
+
+		sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+		sudo chmod +x /usr/local/bin/docker-compose
+
+		newgrp docker
 	fi
 
 	# Install AWS CLI 2
