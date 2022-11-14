@@ -64,6 +64,9 @@ Base() {
 	sudo dnf install -y epel-release
 	sudo dnf module enable -y nginx:mainline
 
+	sudo cp $(dirname $SCRIPT_PATH)/nginx.repo /etc/yum.repos.d
+	sudo yum-config-manager --enable nginx-mainline
+
 	sudo dnf config-manager --set-enabled powertools
 	sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 	sudo dnf install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm
