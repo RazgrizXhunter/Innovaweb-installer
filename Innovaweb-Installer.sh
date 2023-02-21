@@ -74,6 +74,7 @@ Base() {
 	sudo dnf install -y php71 php71-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
 	sudo dnf install -y php73 php73-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
 	sudo dnf install -y php74 php74-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
+	sudo dnf install -y php81 php81-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
 
 	sudo dnf install -y git htop vim nano mariadb-server python39 nginx cronie wget certbot python3-certbot python3-certbot-nginx unzip net-tools lsof curl
 
@@ -97,6 +98,11 @@ Base() {
 	sudo systemctl enable php74-php-fpm
 	FPMConfig php74
 	sudo systemctl restart php74-php-fpm
+
+	sudo systemctl start php81-php-fpm
+	sudo systemctl enable php81-php-fpm
+	FPMConfig php81
+	sudo systemctl restart php81-php-fpm
 
 	sudo mysql_secure_installation
 
