@@ -137,6 +137,8 @@ Base() {
 
 	cd
 
+	chmod +x ./Scripts/keysync/keysync.sh
+
 	echo "Recuerda configurar Keysync."
 	echo "./Scripts/keysync/keysync.sh -I"
 }
