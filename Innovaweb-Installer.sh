@@ -71,38 +71,17 @@ Base() {
 	sudo dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
 	sudo dnf install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm
 
-	sudo dnf install -y php71 php71-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
-	sudo dnf install -y php73 php73-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
-	sudo dnf install -y php74 php74-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
-	sudo dnf install -y php81 php81-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
-
 	sudo dnf install -y git htop vim nano mariadb-server python39 nginx cronie wget certbot python3-certbot python3-certbot-nginx unzip net-tools lsof curl
+
+	echo "Please enter PHP versions to install, separated by comma (using this format: 'php74, php81'):"
+	read user_list
+	php_version_install "$user_list"
 
 	sudo systemctl enable nginx
 	sudo systemctl start nginx
 
 	sudo systemctl enable mariadb
 	sudo systemctl start mariadb
-
-	sudo systemctl start php71-php-fpm
-	sudo systemctl enable php71-php-fpm
-	FPMConfig php71
-	sudo systemctl restart php71-php-fpm
-
-	sudo systemctl start php73-php-fpm
-	sudo systemctl enable php73-php-fpm
-	FPMConfig php73
-	sudo systemctl restart php73-php-fpm
-
-	sudo systemctl start php74-php-fpm
-	sudo systemctl enable php74-php-fpm
-	FPMConfig php74
-	sudo systemctl restart php74-php-fpm
-
-	sudo systemctl start php81-php-fpm
-	sudo systemctl enable php81-php-fpm
-	FPMConfig php81
-	sudo systemctl restart php81-php-fpm
 
 	sudo mysql_secure_installation
 
@@ -160,6 +139,20 @@ Base() {
 
 	echo "Recuerda configurar Keysync."
 	echo "./Scripts/keysync/keysync.sh -I"
+}
+
+php_version_install() {
+	local IFS=","
+	for php_version in $1; do
+		php_version=${php_version//[[:blank:]]/}  # Remove spaces
+		echo "Trying to install required version: $php_version"
+		sudo dnf install -y ${php_version} ${php_version}-php-{fpm,intl,cli,common,gd,json,mbstring,mysqlnd,opcache,pdo,soap,zip,xml}
+
+		sudo systemctl start ${php_version}-php-fpm
+		sudo systemctl enable ${php_version}-php-fpm
+		FPMConfig ${php_version}
+		sudo systemctl restart ${php_version}-php-fpm
+	done
 }
 
 FPMConfig() {
